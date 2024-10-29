@@ -1,8 +1,8 @@
-アプリ名：Make your dreams come true
+アプリ名：Dream Timer
 
 このWebアプリの特徴：
 　自ら設定した目標達成の年月日を入力するとブラウザを閉じても目標達成の日時を覚えているので
-　Make your dreams come true　夢は自ら達成する。
+　設定してすぐにカウントダウン　Dream Timer　夢は自ら達成する！というアプリです（笑）
  　
 ・機能
 　カレンダー形式での日時選択
