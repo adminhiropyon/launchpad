@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カウントダウンタイマー</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .input-container {
+            margin-bottom: 2rem;
+        }
+        input[type="datetime-local"] {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 1rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .countdown {
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+        .unit {
+            display: inline-block;
+            margin: 0 0.5rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            min-width: 80px;
+        }
+        .unit-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>カウントダウンタイマー</h1>
+        <div class="input-container">
+            <input type="datetime-local" id="target-date" required>
+            <button onclick="setTargetDate()">設定</button>
+        </div>
+        <div class="countdown">
+            <div class="unit">
+                <span id="days">0</span>
+                <div class="unit-label">日</div>
+            </div>
+            <div class="unit">
+                <span id="hours">0</span>
+                <div class="unit-label">時間</div>
+            </div>
+            <div class="unit">
+                <span id="minutes">0</span>
+                <div class="unit-label">分</div>
+            </div>
+            <div class="unit">
+                <span id="seconds">0</span>
+                <div class="unit-label">秒</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ローカルストレージから保存された日付を取得
+        const savedDate = localStorage.getItem('targetDate');
+        if (savedDate) {
+            document.getElementById('target-date').value = new Date(parseInt(savedDate))
+                .toISOString().slice(0, 16);
+        }
+
+        function setTargetDate() {
+            const input = document.getElementById('target-date');
+            const targetDate = new Date(input.value).getTime();
+            
+            if (isNaN(targetDate)) {
+                alert('有効な日付を入力してください');
+                return;
+            }
+
+            // ローカルストレージに保存
+            localStorage.setItem('targetDate', targetDate.toString());
+            
+            // カウントダウンを即時開始
+            updateCountdown();
+        }
+
+        function updateCountdown() {
+            const targetDate = parseInt(localStorage.getItem('targetDate'));
+            
+            if (!targetDate) {
+                return;
+            }
+
+            const currentTime = new Date().getTime();
+            const timeDifference = targetDate - currentTime;
+
+            if (timeDifference <= 0) {
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '0';
+                document.getElementById('minutes').textContent = '0';
+                document.getElementById('seconds').textContent = '0';
+                return;
+            }
+
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+
+        // 保存された日付があれば、ページロード時にカウントダウンを開始
+        if (savedDate) {
+            updateCountdown();
+        }
+
+        // 1秒ごとにカウントダウンを更新
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
